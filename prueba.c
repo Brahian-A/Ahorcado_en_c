@@ -56,10 +56,20 @@ int main(void)
         const int max_errores = 6;
         char solucion[50];
         const char *words[] = {
-            "programacion", "computadora", "teclado", "raton", "pantalla",
-            "lenguaje", "desarrollador", "variable", "funcion", "compilador",
-            "algoritmo", "memoria", "procesador", "software", "hardware",
-            "internet", "servidor", "base", "datos", "codigo"
+                    "programacion", "computadora", "teclado", "raton", "pantalla",
+                    "lenguaje", "desarrollador", "variable", "funcion", "compilador",
+                    "algoritmo", "memoria", "procesador", "software", "hardware",
+                    "internet", "servidor", "base", "datos", "codigo",
+                    "archivo", "carpeta", "consola", "clic", "red",
+                    "usb", "aplicacion", "sistema", "usuario", "clave",
+                    "nube", "sitio", "web", "correo", "imagen",
+                    "video", "enlace", "programa", "navegador", "router",
+                    "wifi", "control", "barra", "boton", "ventana",
+                    "icono", "descarga", "registro", "monitor", "celular",
+                    "tablet", "login", "logout", "pantallazo", "atajo",
+                    "actualizar", "formato", "buscador", "navegar", "scroll",
+                    "copiar", "pegar", "reiniciar", "bateria", "subir",
+                    "mensaje"
         };
         char matriz[5][6] = {
             "     ",
@@ -89,7 +99,7 @@ int main(void)
                 mostrar_barra_vida(errores, max_errores);
                 printf("Palabra: %s %d\n", solucion, len_word);
                 printf("Ingresa una letra: ");
-                printf("%s", palabra_oculta); 
+                
             }
 
             if (getline(&line, &len, stdin) == -1)
