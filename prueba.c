@@ -80,7 +80,7 @@ int main(void)
         };
 
         srand(time(NULL));
-        int index = rand() % 20;
+        int index = rand() % 64;
         char palabra_oculta[50];
         strcpy(palabra_oculta, words[index]);
         len_word = strlen(palabra_oculta);
