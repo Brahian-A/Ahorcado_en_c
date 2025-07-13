@@ -8,6 +8,64 @@
 #define MAX_PALABRAS 100
 #define MAX_LONGITUD 50
 
+const char *estados_ahorcado[] = {
+    " +---+\n"
+    " |   |\n"
+    "     |\n"
+    "     |\n"
+    "     |\n"
+    "     |\n"
+    "=========\n",
+
+    " +---+\n"
+    " |   |\n"
+    " O   |\n"
+    "     |\n"
+    "     |\n"
+    "     |\n"
+    "=========\n",
+
+    " +---+\n"
+    " |   |\n"
+    " O   |\n"
+    " |   |\n"
+    "     |\n"
+    "     |\n"
+    "=========\n",
+
+    " +---+\n"
+    " |   |\n"
+    " O   |\n"
+    "/|   |\n"
+    "     |\n"
+    "     |\n"
+    "=========\n",
+
+    " +---+\n"
+    " |   |\n"
+    " O   |\n"
+    "/|\\  |\n"
+    "     |\n"
+    "     |\n"
+    "=========\n",
+
+    " +---+\n"
+    " |   |\n"
+    " O   |\n"
+    "/|\\  |\n"
+    "/    |\n"
+    "     |\n"
+    "=========\n",
+
+    " +---+\n"
+    " |   |\n"
+    " O   |\n"
+    "/|\\  |\n"
+    "/ \\  |\n"
+    "     |\n"
+    "=========\n"
+};
+
 void mostrar_barra_vida(int errores, int max_errores)
 {
     int llenos = max_errores - errores;
@@ -15,29 +73,6 @@ void mostrar_barra_vida(int errores, int max_errores)
     for (int i = 0; i < llenos; i++) printf("█");
     for (int i = 0; i < errores; i++) printf("░");
     printf("]\n");
-}
-
-void actualizar_matriz(char matriz[5][6], int errores)
-{
-    switch (errores)
-    {
-        case 1:
-            strcpy(matriz[2], " O   ");
-            strcpy(matriz[3], " |   ");
-            break;
-        case 2:
-            strcpy(matriz[3], "/|\\  ");
-            break;
-        case 3:
-            strcpy(matriz[4], "/ \\  ");
-            break;
-        case 4:
-            strcpy(matriz[1], " |   ");
-            break;
-        case 5:
-            strcpy(matriz[0], " |   ");
-            break;
-    }
 }
 
 int main(void)
@@ -69,7 +104,7 @@ int main(void)
     char letras_falladas[30] = "";
     int cantidad_falladas = 0;
 
-    while (69)
+    while (1)
     {
         char *line = NULL;
         size_t len = 0;
@@ -90,21 +125,12 @@ int main(void)
             solucion[i] = '_';
         solucion[len_word] = '\0';
 
-        char matriz[5][6] = {
-            "     ",
-            "     ",
-            "     ",
-            "     ",
-            "     "
-        };
-
-        while (69)
+        while (1)
         {
             if (isatty(STDIN_FILENO))
             {
                 system("clear");
-                for (int i = 0; i < 5; i++)
-                    printf("%s\n", matriz[i]);
+                printf("%s", estados_ahorcado[errores]);
                 mostrar_barra_vida(errores, max_errores);
                 printf("Palabra: %s %d\n", solucion, len_word);
                 if (cantidad_falladas > 0)
@@ -138,14 +164,12 @@ int main(void)
                     letras_falladas[cantidad_falladas] = '\0';
                 }
                 errores++;
-                actualizar_matriz(matriz, errores);
             }
 
             if (strcmp(solucion, palabra_oculta) == 0)
             {
                 system("clear");
-                for (int i = 0; i < 5; i++)
-                    printf("%s\n", matriz[i]);
+                printf("%s", estados_ahorcado[errores]);
                 mostrar_barra_vida(errores, max_errores);
                 printf("Palabra: %s %d\n", solucion, len_word);
                 if (cantidad_falladas > 0)
@@ -154,18 +178,20 @@ int main(void)
                 system("mpg123 -q sonidos/victoria.mp3 > /dev/null 2>&1 &");
                 victorias++;
                 printf(victorias == 1 ? "1 Victoria\n" : "%d Victorias\n", victorias);
-                sleep(2);
+                sleep(1);
                 break;
             }
 
-            if (errores >= max_errores + 1)
+            if (errores >= max_errores)
             {
+                system("clear");
+                printf("%s", estados_ahorcado[errores]);
+                mostrar_barra_vida(errores, max_errores);
                 printf("¡Perdiste! La palabra era: %s\n", palabra_oculta);
                 system("mpg123 -q sonidos/derrota.mp3 > /dev/null 2>&1 &");
-            }
-
-            if (errores == max_errores + 1)
+                sleep(1);
                 break;
+            }
         }
 
         free(line);
