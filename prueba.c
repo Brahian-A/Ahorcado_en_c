@@ -151,6 +151,7 @@ int main(void)
                 if (cantidad_falladas > 0)
                     printf("Letras falladas: %s\n", letras_falladas);
                 printf("¡Ganaste! La palabra era: %s\n", palabra_oculta);
+                system("mpg123 sonidos/victoria.mp3 &");
                 victorias++;
                 printf(victorias == 1 ? "1 Victoria\n" : "%d Victorias\n", victorias);
                 sleep(2);
