@@ -151,16 +151,17 @@ int main(void)
                 if (cantidad_falladas > 0)
                     printf("Letras falladas: %s\n", letras_falladas);
                 printf("¡Ganaste! La palabra era: %s\n", palabra_oculta);
-                system("mpg123 sonidos/victoria.mp3 &");
+                system("mpg123 -q sonidos/victoria.mp3 > /dev/null 2>&1 &");
                 victorias++;
                 printf(victorias == 1 ? "1 Victoria\n" : "%d Victorias\n", victorias);
                 sleep(2);
                 break;
             }
 
-            if (errores >= max_errores)
+            if (errores >= max_errores + 1)
             {
                 printf("¡Perdiste! La palabra era: %s\n", palabra_oculta);
+                system("mpg123 -q sonidos/derrota.mp3 > /dev/null 2>&1 &");
             }
 
             if (errores == max_errores + 1)
