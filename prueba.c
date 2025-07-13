@@ -3,11 +3,12 @@
 #include <string.h>
 #include <unistd.h>
 #include <time.h>
+#include <ctype.h>
 
 void mostrar_barra_vida(int errores, int max_errores)
 {
     int llenos = max_errores - errores;
-    printf("                   %s Vida: [", errores >= max_errores  ? "💀" : "❤️");
+    printf("                   %s Vida: [", errores >= max_errores ? "💀" : "❤️");
     for (int i = 0; i < llenos; i++) printf("█");
     for (int i = 0; i < errores; i++) printf("░");
     printf("]\n");
@@ -46,6 +47,8 @@ int main(void)
     }
 
     char respuesta[10];
+    char letras_falladas[30] = "";
+    int cantidad_falladas = 0;
 
     while (69)
     {
@@ -53,23 +56,25 @@ int main(void)
         size_t len = 0;
         int len_word = 0;
         int errores = 0;
+        letras_falladas[0] = '\0';
+        cantidad_falladas = 0;
         const int max_errores = 6;
         char solucion[50];
         const char *words[] = {
-                    "programacion", "computadora", "teclado", "raton", "pantalla",
-                    "lenguaje", "desarrollador", "variable", "funcion", "compilador",
-                    "algoritmo", "memoria", "procesador", "software", "hardware",
-                    "internet", "servidor", "base", "datos", "codigo",
-                    "archivo", "carpeta", "consola", "clic", "red",
-                    "usb", "aplicacion", "sistema", "usuario", "clave",
-                    "nube", "sitio", "web", "correo", "imagen",
-                    "video", "enlace", "programa", "navegador", "router",
-                    "wifi", "control", "barra", "boton", "ventana",
-                    "icono", "descarga", "registro", "monitor", "celular",
-                    "tablet", "login", "logout", "pantallazo", "atajo",
-                    "actualizar", "formato", "buscador", "navegar", "scroll",
-                    "copiar", "pegar", "reiniciar", "bateria", "subir",
-                    "mensaje"
+            "programacion", "computadora", "teclado", "raton", "pantalla",
+            "lenguaje", "desarrollador", "variable", "funcion", "compilador",
+            "algoritmo", "memoria", "procesador", "software", "hardware",
+            "internet", "servidor", "base", "datos", "codigo",
+            "archivo", "carpeta", "consola", "clic", "red",
+            "usb", "aplicacion", "sistema", "usuario", "clave",
+            "nube", "sitio", "web", "correo", "imagen",
+            "video", "enlace", "programa", "navegador", "router",
+            "wifi", "control", "barra", "boton", "ventana",
+            "icono", "descarga", "registro", "monitor", "celular",
+            "tablet", "login", "logout", "pantallazo", "atajo",
+            "actualizar", "formato", "buscador", "navegar", "scroll",
+            "copiar", "pegar", "reiniciar", "bateria", "subir",
+            "mensaje"
         };
         char matriz[5][6] = {
             "     ",
@@ -98,8 +103,9 @@ int main(void)
                     printf("%s\n", matriz[i]);
                 mostrar_barra_vida(errores, max_errores);
                 printf("Palabra: %s %d\n", solucion, len_word);
+                if (cantidad_falladas > 0)
+                    printf("Letras falladas: %s\n", letras_falladas);
                 printf("Ingresa una letra: ");
-                
             }
 
             if (getline(&line, &len, stdin) == -1)
@@ -108,7 +114,7 @@ int main(void)
                 return 1;
             }
 
-            char letra = line[0];
+            char letra = tolower(line[0]);
             int acierto = 0;
 
             for (int i = 0; i < len_word; i++)
@@ -122,18 +128,29 @@ int main(void)
 
             if (!acierto)
             {
+                if (!strchr(letras_falladas, letra))
+                {
+                    letras_falladas[cantidad_falladas++] = letra;
+                    letras_falladas[cantidad_falladas] = '\0';
+                }
+
                 errores++;
                 actualizar_matriz(matriz, errores);
             }
 
             if (strcmp(solucion, palabra_oculta) == 0)
             {
+                system("clear");
+                for (int i = 0; i < 5; i++)
+                    printf("%s\n", matriz[i]);
+                mostrar_barra_vida(errores, max_errores);
+                printf("Palabra: %s %d\n", solucion, len_word);
+                if (cantidad_falladas > 0)
+                    printf("Letras falladas: %s\n", letras_falladas);
                 printf("¡Ganaste! La palabra era: %s\n", palabra_oculta);
                 victorias++;
-                if (victorias == 1)
-                    printf("%d Victoria \n", victorias);
-                else
-                    printf("%d Victorias \n", victorias);
+                printf("%d %s\n", victorias, victorias == 1 ? "Victoria" : "Victorias");
+                sleep(2);
                 break;
             }
 
@@ -152,7 +169,6 @@ int main(void)
         if (respuesta[0] != 's' && respuesta[0] != 'S')
             break;
     }
-
 
     archivo_victorias = fopen("victorias.txt", "w");
     if (archivo_victorias != NULL) {
